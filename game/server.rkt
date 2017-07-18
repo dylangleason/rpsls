@@ -1,6 +1,7 @@
 #lang racket
 
-(require "../lib/request.rkt"
+(require "../lib/logging.rkt"
+         "../lib/request.rkt"
          "../lib/response.rkt"
          "../lib/server.rkt"
          "./play.rkt"
@@ -9,34 +10,34 @@
 (define app-port 8080)
 
 (define (root-handler req)
-  (response-ok "Hello"))
-
-(define (health-handler req)
-  (response-ok "OK"))
+  (response/ok "Game Server"))
 
 (define (choice-handler req)
-  (response-ok (random-choice)))
+  (response/ok (random-choice)))
 
 (define (choices-handler req)
-  (response-ok choices))
+  (response/ok choices))
 
 (define (play-handler req)
   (with-handlers ([exn:fail?
                    (lambda (e)
-                     (response-unprocessable-entity
-                      (hash 'Error (exn-message e))))])
-    (response-ok
+                     (let ([msg (exn-message e)])
+                       (app-log/error msg)
+                       (response/unprocessable-entity
+                        (hash 'Error msg))))])
+    (response/ok
      (play (query-param->int req "player")
            (query-param->int req "computer")))))
 
-(define-values (route req)
+(define-values (router req)
   (dispatch-rules
-   [("")        root-handler]
-   [("health")  #:method "get" health-handler]
+   [("")        #:method "get" root-handler]
    [("choice")  #:method "get" choice-handler]
    [("choices") #:method "get" choices-handler]
    [("play")    #:method "get" play-handler]
-   [else        (lambda (req) (response-not-found))]))
+   [else        (lambda (req) (response/not-found))]))
 
 (run-server
- (lambda (req) (route req)) app-port)
+ app-port
+ (lambda (req)
+   (dispatch-request req router logging-middleware)))
