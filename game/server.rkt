@@ -22,7 +22,6 @@
   (with-handlers ([exn:fail?
                    (lambda (e)
                      (let ([msg (exn-message e)])
-                       (app-log/error msg)
                        (response/unprocessable-entity
                         (hash 'Error msg))))])
     (response/ok
@@ -37,7 +36,10 @@
    [("play")    #:method "get" play-handler]
    [else        (lambda (req) (response/not-found))]))
 
-(run-server
+(run
  app-port
  (lambda (req)
-   (dispatch-request req router logging-middleware)))
+   (dispatch-request
+    req router
+    #:pre (list middleware/log-request)
+    #:post (list middleware/log-response))))

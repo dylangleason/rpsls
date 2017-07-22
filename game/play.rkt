@@ -96,7 +96,6 @@
       [(4) (new lizard%)]
       [(5) (new spock%)]
       [else
-       (error (format "Invalid choice ID: ~a"
-                      choice))]))
+       (error (format "Invalid choice ID: ~a" choice))]))
   (hash 'Results
         (send (make-action p-choice) play (make-action c-choice))))
