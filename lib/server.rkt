@@ -1,6 +1,6 @@
 #lang racket
 
-(require "./logging.rkt"
+(require "logging.rkt"
          net/url-string
          web-server/servlet
          web-server/servlet-env
@@ -9,7 +9,7 @@
 (provide dispatch-request
          middleware/log-request
          middleware/log-response
-         run)
+         serve)
 
 (define (middleware/log-request req)
   (begin0
@@ -38,7 +38,7 @@
                     (loop ((car fns) req) (cdr fns))))])
       (loop (route-fn (loop req pre)) post))))
 
-(define (run port dispatch-fn)
+(define (serve port dispatch-fn)
   (begin
     (receive-log 'info)
     (log/info (format "Server listening on port ~a" port))

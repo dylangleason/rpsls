@@ -18,11 +18,12 @@
     (thread
      (lambda ()
        (let loop ()
-         (let ([v (sync recv)])
-           (printf "~a ~a\n"
-                   (~.a (string-upcase (symbol->string (vector-ref v 0)))
-                        #:width 7)
-                   (vector-ref v 1)))
+         (define v (sync recv))
+         (printf "~a ~a\n"
+                 (~.a
+                  (string-upcase (symbol->string (vector-ref v 0)))
+                  #:width 7)
+                 (vector-ref v 1))
          (loop))))))
 
 (define (log/debug message)

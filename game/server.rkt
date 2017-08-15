@@ -4,7 +4,7 @@
          "../lib/request.rkt"
          "../lib/response.rkt"
          "../lib/server.rkt"
-         "./play.rkt"
+         "play.rkt"
          web-server/dispatch)
 
 (define app-port 8080)
@@ -26,7 +26,7 @@
                         (hash 'Error msg))))])
     (response/ok
      (play (query-param->int req "player")
-           (query-param->int req "computer")))))
+           (hash-ref (random-choice) 'Id)))))
 
 (define-values (router req)
   (dispatch-rules
@@ -36,7 +36,7 @@
    [("play")    #:method "get" play-handler]
    [else        (lambda (req) (response/not-found))]))
 
-(run
+(serve
  app-port
  (lambda (req)
    (dispatch-request

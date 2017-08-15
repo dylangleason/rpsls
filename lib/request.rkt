@@ -1,8 +1,10 @@
 #lang racket
 
-(require web-server/http/request-structs)
+(require json
+         web-server/http/request-structs)
 
-(provide query-param->int
+(provide post-data->jsexpr
+         query-param->int
          query-param->string)
 
 (define (query-param->string req key)
@@ -17,3 +19,6 @@
     (if (not (and number (integer? number)))
         (raise (error (format "~a param is not an integer" key)))
         number)))
+
+(define (post-data->jsexpr req)
+  (bytes->jsexpr (request-post-data/raw req)))
