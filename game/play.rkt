@@ -12,10 +12,6 @@
 ;;; - Spock vaporizes rock
 ;;; - rock crushes scissors
 
-(provide choices
-         play
-         random-choice)
-
 (define action-interface (interface () win? lose?))
 
 (define action%
@@ -84,9 +80,6 @@
         #hash((Id . 4) (Name . "lizard"))
         #hash((Id . 5) (Name . "spock"))))
 
-(define (random-choice)
-  (list-ref choices (random (length choices))))
-
 (define (play p-choice c-choice)
   (define (make-action choice)
     (case choice
@@ -99,3 +92,5 @@
        (error (format "Invalid choice ID: ~a" choice))]))
   (hash 'Results
         (send (make-action p-choice) play (make-action c-choice))))
+
+(provide choices play)

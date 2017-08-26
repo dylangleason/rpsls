@@ -6,11 +6,6 @@
          web-server/servlet-env
          web-server/dispatchers/dispatch-log)
 
-(provide dispatch-request
-         middleware/log-request
-         middleware/log-response
-         serve)
-
 (define (middleware/log-request req)
   (begin0
     req
@@ -50,3 +45,8 @@
      #:servlet-path "/"
      #:servlet-regexp #rx""
      #:stateless? #t)))
+
+(provide dispatch-request
+         middleware/log-request
+         middleware/log-response
+         serve)

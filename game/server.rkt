@@ -5,6 +5,7 @@
          "../lib/response.rkt"
          "../lib/server.rkt"
          "play.rkt"
+         racket/random
          web-server/dispatch)
 
 (define app-port 8080)
@@ -13,7 +14,7 @@
   (response/ok "Game Server"))
 
 (define (choice-handler req)
-  (response/ok (random-choice)))
+  (response/ok (random-ref choices)))
 
 (define (choices-handler req)
   (response/ok choices))
@@ -26,7 +27,7 @@
                         (hash 'Error msg))))])
     (response/ok
      (play (query-param->int req "player")
-           (hash-ref (random-choice) 'Id)))))
+           (hash-ref (random-ref choices) 'Id)))))
 
 (define-values (router req)
   (dispatch-rules
